@@ -377,7 +377,7 @@ def check_community_release() -> tuple[bool, int, list[str]]:
             "release_version": "0.2.0",
             "distribution_target": "community-ready",
             "knowledge_maturity": "demo-verified",
-            "human_publication_decision": "pending",
+            "public_visibility_decision": "pending",
         }
         for key, value in expected.items():
             if release.get(key) != value:
@@ -442,7 +442,7 @@ def validate_release_status_shape(release: dict[str, Any]) -> list[str]:
         "release_version",
         "distribution_target",
         "knowledge_maturity",
-        "human_publication_decision",
+        "public_visibility_decision",
         "repository_reviewed_at",
         "market_ready",
         "repository_review",

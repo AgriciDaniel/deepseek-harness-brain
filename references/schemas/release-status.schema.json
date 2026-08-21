@@ -10,7 +10,7 @@
     "release_version",
     "distribution_target",
     "knowledge_maturity",
-    "human_publication_decision",
+    "public_visibility_decision",
     "repository_reviewed_at",
     "market_ready",
     "repository_review",
@@ -24,7 +24,7 @@
     "release_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
     "distribution_target": {"const": "community-ready"},
     "knowledge_maturity": {"const": "demo-verified"},
-    "human_publication_decision": {"enum": ["pending", "approved", "declined"]},
+    "public_visibility_decision": {"enum": ["pending", "approved", "declined"]},
     "repository_reviewed_at": {"type": "string", "format": "date"},
     "market_ready": {"type": "boolean"},
     "repository_review": {

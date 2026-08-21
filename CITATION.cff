@@ -3,6 +3,7 @@ message: "If you use this research brain, please cite it and the upstream DeepSe
 title: "DeepSeek Harness Brain"
 type: software
 version: 0.2.0
+date-released: 2026-08-21
 authors:
   - family-names: Agrici
     given-names: Daniel

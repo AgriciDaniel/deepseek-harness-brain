@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0 release candidate - 2026-08-21
+## 0.2.0 - 2026-08-21
 
 - Added a safe, allowlisted, content-addressed DeepSeek Harness checkout importer.
 - Added subsystem portability rules, synthesis, HTML rendering, schemas, fixtures, and focused tests.

@@ -44,6 +44,6 @@ The generated `dist/` archives are local verification artifacts and are not
 committed. Publishing a GitHub release or changing repository visibility requires
 a separate reviewed decision.
 
-The hosted documentation site is outside the 0.2.0 release candidate. The
+The hosted documentation site is outside the 0.2.0 release. The
 tracked README, guide, diagrams, and image provenance are its public-facing
 documentation surfaces.
