@@ -4,7 +4,7 @@
   "release_version": "0.2.0",
   "distribution_target": "community-ready",
   "knowledge_maturity": "demo-verified",
-  "public_visibility_decision": "pending",
+  "public_visibility_decision": "approved",
   "repository_reviewed_at": "2026-08-21",
   "market_ready": false,
   "repository_review": {
@@ -15,7 +15,7 @@
     "security_policy": true,
     "private_reporting_plan": true
   },
-  "decision": "Approved as the private-repository v0.2.0 community release. Public repository visibility remains an owner decision.",
+  "decision": "Published as the public v0.2.0 community release after source, license, privacy, archive, and repository-setting review.",
   "verified_release_evidence": [
     "allowlisted source capture and domain adapter tests",
     "deterministic template and sample vault checks",

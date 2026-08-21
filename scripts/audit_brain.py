@@ -377,7 +377,7 @@ def check_community_release() -> tuple[bool, int, list[str]]:
             "release_version": "0.2.0",
             "distribution_target": "community-ready",
             "knowledge_maturity": "demo-verified",
-            "public_visibility_decision": "pending",
+            "public_visibility_decision": "approved",
         }
         for key, value in expected.items():
             if release.get(key) != value:

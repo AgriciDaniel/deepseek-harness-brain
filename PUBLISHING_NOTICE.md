@@ -1,8 +1,8 @@
 # Publishing Notice
 
-DeepSeek Harness Brain 0.2.0 has a community-ready distribution gate. Repository
-visibility remains a separate owner decision, and a private repository is not
-proof that every future release gate has passed.
+DeepSeek Harness Brain 0.2.0 is public under its community-ready distribution
+requirements. Public availability does not prove that every future release or
+market-readiness requirement has passed.
 
 ## Rights boundary
 
