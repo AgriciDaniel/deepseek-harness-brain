@@ -14,7 +14,7 @@
       "source_type": "official"
     },
     {
-      "path": ".raw/sources/package.json",
+      "path": ".raw/sources/package.json.txt",
       "sha256": "4adbdffa373754a048a214c5de3ec0671ac6e1f3c1521ec5b37e8fad1a4986d7",
       "retrieved": "2026-08-21",
       "source_type": "official"

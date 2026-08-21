@@ -20,7 +20,7 @@
       "reviewed_for_redistribution": true
     },
     {
-      "path": ".raw/sources/package.json",
+      "path": ".raw/sources/package.json.txt",
       "sha256": "4adbdffa373754a048a214c5de3ec0671ac6e1f3c1521ec5b37e8fad1a4986d7",
       "vaults": ["template", "sample"],
       "origin_url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/package.json",

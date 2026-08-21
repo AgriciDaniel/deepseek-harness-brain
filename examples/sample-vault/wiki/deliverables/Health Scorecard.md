@@ -26,7 +26,7 @@ source_urls: []
 |---|---|---:|
 | `.raw/sources/README.md` | `cd7f5d59b4e9` | 2026-08-21 |
 | `.raw/sources/AGENTS.md` | `ad0a802faf7b` | 2026-08-21 |
-| `.raw/sources/package.json` | `4adbdffa3737` | 2026-08-21 |
+| `.raw/sources/package.json.txt` | `4adbdffa3737` | 2026-08-21 |
 | `.raw/sources/architecture.md` | `6a6e9d4fdb58` | 2026-08-21 |
 | `.raw/sources/agent-lifecycle.md` | `348a63eebf0e` | 2026-08-21 |
 | `.raw/sources/capability-seams.md` | `da2222f7cdab` | 2026-08-21 |

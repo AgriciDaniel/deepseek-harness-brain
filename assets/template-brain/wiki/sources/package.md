@@ -17,14 +17,14 @@ related:
 source_urls:
   - "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/package.json"
 sources:
-  - ".raw/sources/package.json"
+  - ".raw/sources/package.json.txt"
 ---
 
 # Root Package Manifest
 
 ## Source
 
-- Path: `.raw/sources/package.json`
+- Path: `.raw/sources/package.json.txt`
 - Hash: `4adbdffa373754a048a214c5de3ec0671ac6e1f3c1521ec5b37e8fad1a4986d7`
 - Retrieved: 2026-08-21
 - Type: official
