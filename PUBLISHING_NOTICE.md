@@ -1,7 +1,8 @@
 # Publishing Notice
 
-DeepSeek Harness Brain is being prepared for community review. Private repository
-visibility is not proof that every future public release gate has passed.
+DeepSeek Harness Brain 0.2.0 has a community-ready distribution gate. Repository
+visibility remains a separate owner decision, and a private repository is not
+proof that every future release gate has passed.
 
 ## Rights boundary
 
@@ -37,7 +38,12 @@ notes, or third-party documents unless their public reuse rights are explicit.
 5. Confirm `LICENSE`, `THIRD_PARTY_NOTICES.md`, and the upstream license copy are present.
 6. Inspect the final archive entry list for runtime artifacts, symlinks, and unsafe paths.
 7. Verify repository visibility, Actions permissions, branch rules, and security settings.
-8. Record checks that did not run and keep the release status below market-ready.
+8. Record checks that did not run and preserve the explicit runtime evidence limits.
 
 The generated `dist/` archives are local verification artifacts and are not
-committed. Publishing a GitHub release requires a separate reviewed decision.
+committed. Publishing a GitHub release or changing repository visibility requires
+a separate reviewed decision.
+
+The hosted documentation site is outside the 0.2.0 release candidate. The
+tracked README, guide, diagrams, and image provenance are its public-facing
+documentation surfaces.

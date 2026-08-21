@@ -27,7 +27,7 @@ deepseek-harness-brain report --vault ~/deepseek-harness-brain-vaults/acme --htm
 
 ## Research Rule
 
-The current brain is domain-adapted and demo-verified against the pinned upstream
+Version 0.2.0 is community-ready and domain-adapted against the pinned upstream
 commit. Refresh current official or primary sources before extending its claims
 or preparing another release. If evidence is stale, lower confidence instead of
 carrying the current status forward automatically.

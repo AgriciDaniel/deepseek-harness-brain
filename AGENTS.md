@@ -36,5 +36,5 @@ runtimes that load project-level `AGENTS.md` instructions.
 python -m compileall scripts deepseek_harness_brain tests
 python tests/test_pipeline.py
 python scripts/audit_brain.py --json
-python scripts/package_release.py --version 0.2.0 --release-type demo
+python scripts/package_release.py --version 0.2.0 --release-type community-ready
 ```

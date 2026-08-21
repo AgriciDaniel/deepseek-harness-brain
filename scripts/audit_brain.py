@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -94,9 +95,32 @@ MATURITY_SCORE_CAP = {
     "researched": 74,
     "domain-adapted": 84,
     "demo-verified": 89,
+    "community-ready": 95,
     "market-ready": 100,
 }
-MATURITY_ORDER = ["scaffolded", "researched", "domain-adapted", "demo-verified", "market-ready"]
+MATURITY_ORDER = ["scaffolded", "researched", "domain-adapted", "demo-verified", "community-ready", "market-ready"]
+COMMUNITY_RELEASE_FILES = [
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
+    "licenses/DEEPSEEK-HARNESS-MIT.txt",
+    "SECURITY.md",
+    "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
+    "SUPPORT.md",
+    "PUBLISHING_NOTICE.md",
+    "CITATION.cff",
+    "references/schemas/release-status.schema.json",
+    "references/public-capture-allowlist.json",
+    ".github/workflows/ci.yml",
+    ".github/CODEOWNERS",
+    ".github/PULL_REQUEST_TEMPLATE.md",
+    ".github/ISSUE_TEMPLATE/bug_report.yml",
+    ".github/ISSUE_TEMPLATE/feature_request.yml",
+    ".github/ISSUE_TEMPLATE/evidence_correction.yml",
+    ".github/ISSUE_TEMPLATE/config.yml",
+    ".github/dependabot.yml",
+    "assets/images/README.md",
+]
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -144,6 +168,7 @@ def audit_repo() -> dict[str, Any]:
     add_category(categories, "demo_determinism", *check_demo_determinism())
     add_category(categories, "tests", *check_paths(["tests/test_pipeline.py", ".github/workflows/ci.yml"]))
     add_category(categories, "packaging", *check_packaging())
+    add_category(categories, "community_release", *check_community_release())
     add_category(categories, "installability", *check_paths(["install.sh", "uninstall.sh", "pyproject.toml"]))
     add_category(categories, "docs", *check_paths(["README.md", "docs/OPERATOR_KIT.md", "docs/PRODUCT_BOUNDARIES.md", "RELEASE_CHECKLIST.md"]))
     add_category(categories, "obsidian_vault_quality", *check_paths(["assets/template-brain/CODEX.md", "assets/template-brain/.raw/.manifest.json", "assets/template-brain/wiki/hot.md", "assets/template-brain/wiki/index.md", "assets/template-brain/wiki/overview.md", "assets/template-brain/wiki/log.md", "assets/template-brain/wiki/meta/dashboard.md", "assets/template-brain/wiki/canvases/Onboarding Canvas.canvas"]))
@@ -155,10 +180,24 @@ def audit_repo() -> dict[str, Any]:
     raw_score = round(sum(category["score"] for category in categories.values()) / len(categories))
     status = determine_status(categories, raw_score, critical)
     score = min(raw_score, MATURITY_SCORE_CAP[status])
+    community_passed = status in {"community-ready", "market-ready"}
+    market_passed = status == "market-ready"
+    release, _ = load_json_object(REPO / "references" / "release-status.json")
     return {
         "status": status,
         "score": score,
+        "community_ready": status in {"community-ready", "market-ready"},
         "market_ready": status == "market-ready",
+        "requirements": {
+            "community-ready": {
+                "passed": community_passed,
+                "blockers": [] if community_passed else categories["community_release"]["notes"],
+            },
+            "market-ready": {
+                "passed": market_passed,
+                "blockers": [] if market_passed else release.get("unverified_runtime_tiers", ["market-ready decision is not approved"]),
+            },
+        },
         "critical_failures": critical,
         "warnings": warnings,
         "categories": categories,
@@ -170,9 +209,16 @@ def add_category(categories: dict[str, dict[str, Any]], name: str, ok: bool, sco
 
 
 def check_product_clarity() -> tuple[bool, int, list[str]]:
-    text = (read(REPO / "README.md") + "\n" + read(REPO / "SKILL.md")).lower()
-    required = ["buyer", "outputs", "boundaries", "quick start", "maturity"]
-    notes = [f"missing {term} language" for term in required if term not in text]
+    readme = read(REPO / "README.md").lower()
+    product_spec = read(REPO / "references" / "product-spec.md").lower()
+    requirements = {
+        "audience": "## who this is for" in readme or "## buyer" in product_spec,
+        "outputs": "## outputs" in readme,
+        "boundaries": "## evidence boundaries" in readme or "## non-promises" in product_spec,
+        "quick start": "## quick start" in readme,
+        "release status": "release-v0.2.0" in readme or "community-ready" in readme,
+    }
+    notes = [f"missing {label} language" for label, present in requirements.items() if not present]
     return not notes, 100 - 15 * len(notes), notes
 
 
@@ -316,8 +362,156 @@ def check_packaging() -> tuple[bool, int, list[str]]:
     if not path.exists():
         return False, 0, ["missing scripts/package_release.py"]
     text = path.read_text(encoding="utf-8", errors="replace")
-    notes = [f"package script missing {term}" for term in ["SHA256SUMS", "RELEASE_MANIFEST", "release-type", "market-ready", "audit_brain.py"] if term not in text]
+    notes = [f"package script missing {term}" for term in ["SHA256SUMS", "RELEASE_MANIFEST", "release-type", "community-ready", "market-ready", "audit_brain.py"] if term not in text]
     return not notes, 100 - 20 * len(notes), notes
+
+
+def check_community_release() -> tuple[bool, int, list[str]]:
+    notes = [f"missing {rel}" for rel in COMMUNITY_RELEASE_FILES if not (REPO / rel).is_file()]
+    release, errors = load_json_object(REPO / "references" / "release-status.json")
+    notes.extend(f"invalid release-status.json: {error}" for error in errors)
+    if not errors:
+        notes.extend(validate_release_status_shape(release))
+        expected = {
+            "schema": "deepseek-harness-brain.release-status.v2",
+            "release_version": "0.2.0",
+            "distribution_target": "community-ready",
+            "knowledge_maturity": "demo-verified",
+            "human_publication_decision": "pending",
+        }
+        for key, value in expected.items():
+            if release.get(key) != value:
+                notes.append(f"release-status.json requires {key}={value!r}")
+        market_ready = release.get("market_ready")
+        if not isinstance(market_ready, bool):
+            notes.append("release-status.json requires a boolean market_ready value")
+        elif market_ready:
+            if release.get("human_reviewed_for_market") is not True:
+                notes.append("market-ready distribution requires an explicit human-reviewed market decision")
+        for key in ["verified_release_evidence", "unverified_runtime_tiers"]:
+            entries = release.get(key)
+            if not isinstance(entries, list) or not entries or not all(clean_string(entry) for entry in entries):
+                notes.append(f"release-status.json requires a non-empty {key} list")
+        reviewed_at = parse_iso_date(clean_string(release.get("repository_reviewed_at")))
+        if reviewed_at is None or reviewed_at > date.today():
+            notes.append("release-status.json requires a valid, non-future repository_reviewed_at date")
+        repository_review = release.get("repository_review")
+        required_review_checks = {
+            "actions_permissions",
+            "branch_protection",
+            "required_ci",
+            "codeowners",
+            "security_policy",
+            "private_reporting_plan",
+        }
+        if not isinstance(repository_review, dict):
+            notes.append("release-status.json requires repository_review checks")
+        else:
+            for key in sorted(required_review_checks):
+                if repository_review.get(key) is not True:
+                    notes.append(f"repository_review requires {key}=true")
+
+    security = read(REPO / "SECURITY.md").lower()
+    if "## supported versions" not in security or "private vulnerability" not in security:
+        notes.append("SECURITY.md must define supported versions and a private reporting route")
+    issue_config = read(REPO / ".github" / "ISSUE_TEMPLATE" / "config.yml").lower()
+    if "blank_issues_enabled: false" not in issue_config:
+        notes.append("issue chooser must disable blank issues")
+    pull_request = read(REPO / ".github" / "PULL_REQUEST_TEMPLATE.md").lower()
+    if "verification actually run" not in pull_request or "release risk" not in pull_request:
+        notes.append("pull request template must request verification and release risk")
+    workflow = read(REPO / ".github" / "workflows" / "ci.yml")
+    if not re.search(r"(?m)^permissions:\s*\n\s+contents:\s*read\s*$", workflow):
+        notes.append("CI workflow must declare read-only contents permission")
+    for line in workflow.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("uses:") and not re.search(r"@[0-9a-f]{40}(?:\s|$)", stripped):
+            notes.append(f"CI action is not pinned to a full commit: {stripped}")
+    codeowners = read(REPO / ".github" / "CODEOWNERS")
+    for protected in ["/.github/", "/scripts/package_release.py", "/references/release-status.json"]:
+        if protected not in codeowners:
+            notes.append(f"CODEOWNERS missing explicit protection for {protected}")
+    notes.extend(check_public_capture_allowlist())
+    return not notes, max(0, 100 - 12 * len(notes)), notes
+
+
+def validate_release_status_shape(release: dict[str, Any]) -> list[str]:
+    required = {
+        "schema",
+        "as_of",
+        "release_version",
+        "distribution_target",
+        "knowledge_maturity",
+        "human_publication_decision",
+        "repository_reviewed_at",
+        "market_ready",
+        "repository_review",
+        "decision",
+        "verified_release_evidence",
+        "unverified_runtime_tiers",
+    }
+    actual = set(release)
+    notes = [f"release-status.json missing field: {key}" for key in sorted(required - actual)]
+    notes.extend(f"release-status.json has unknown field: {key}" for key in sorted(actual - required))
+    as_of = parse_iso_date(clean_string(release.get("as_of")))
+    if as_of is None or as_of > date.today():
+        notes.append("release-status.json requires a valid, non-future as_of date")
+    if not clean_string(release.get("decision")):
+        notes.append("release-status.json requires a decision explanation")
+    return notes
+
+
+def check_public_capture_allowlist() -> list[str]:
+    notes: list[str] = []
+    allowlist, errors = load_json_object(REPO / "references" / "public-capture-allowlist.json")
+    if errors:
+        return [f"invalid public-capture-allowlist.json: {error}" for error in errors]
+    captures = allowlist.get("captures")
+    if not isinstance(captures, list):
+        return ["public-capture-allowlist.json requires captures"]
+    allowed: dict[tuple[str, str], dict[str, Any]] = {}
+    for index, capture in enumerate(captures, start=1):
+        if not isinstance(capture, dict):
+            notes.append(f"public capture #{index} must be an object")
+            continue
+        path = clean_string(capture.get("path"))
+        vaults = capture.get("vaults")
+        if not path or not isinstance(vaults, list) or not vaults:
+            notes.append(f"public capture #{index} requires path and vaults")
+            continue
+        if capture.get("reviewed_for_redistribution") is not True or clean_string(capture.get("license")) != "MIT":
+            notes.append(f"public capture {path} requires MIT license and redistribution review")
+        if not clean_string(capture.get("origin_url")) and not clean_string(capture.get("origin_path")):
+            notes.append(f"public capture {path} requires an origin")
+        for vault_name in vaults:
+            allowed[(clean_string(vault_name), path)] = capture
+    observed: set[tuple[str, str]] = set()
+    roots = {
+        "template": REPO / "assets" / "template-brain",
+        "sample": REPO / "examples" / "sample-vault",
+    }
+    for vault_name, root in roots.items():
+        manifest, errors = load_json_object(root / ".raw" / ".manifest.json")
+        if errors:
+            notes.extend(f"invalid {vault_name} raw manifest: {error}" for error in errors)
+            continue
+        for source in manifest.get("sources", []):
+            path = clean_string(source.get("path")) if isinstance(source, dict) else ""
+            key = (vault_name, path)
+            observed.add(key)
+            capture = allowed.get(key)
+            if capture is None:
+                notes.append(f"{vault_name} raw source is not redistribution-allowlisted: {path}")
+                continue
+            expected = clean_string(capture.get("sha256"))
+            if clean_string(source.get("sha256")) != expected:
+                notes.append(f"{vault_name} manifest hash differs from public allowlist: {path}")
+            source_path = root / path
+            if not source_path.is_file() or hashlib.sha256(source_path.read_bytes()).hexdigest() != expected:
+                notes.append(f"{vault_name} raw file hash differs from public allowlist: {path}")
+    for key in sorted(set(allowed) - observed):
+        notes.append(f"stale public capture allowlist entry: {key[0]}:{key[1]}")
+    return notes
 
 
 def check_demo_determinism() -> tuple[bool, int, list[str]]:
@@ -356,9 +550,13 @@ def determine_status(categories: dict[str, dict[str, Any]], score: int, critical
     if critical or score < 90 or any(not categories[name]["ok"] for name in ["packaging", "installability", "docs", "source_citation", "obsidian_vault_quality"]):
         return "demo-verified"
     release, errors = load_json_object(REPO / "references" / "release-status.json")
-    if errors or release.get("market_ready") is not True:
+    if errors or not categories["community_release"]["ok"]:
         return "demo-verified"
-    return "market-ready"
+    if release.get("market_ready") is True and release.get("human_reviewed_for_market") is True:
+        return "market-ready"
+    if release.get("distribution_target") == "community-ready":
+        return "community-ready"
+    return "demo-verified"
 
 
 def load_json_object(path: Path) -> tuple[dict[str, Any], list[str]]:

@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import stat
 import subprocess
@@ -35,15 +36,21 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Build verified release ZIP artifacts.")
     parser.add_argument("--version", required=True)
     parser.add_argument("--dist-dir", default="dist")
-    parser.add_argument("--release-type", default="scaffold", choices=["scaffold", "demo", "market-ready"])
+    parser.add_argument("--release-type", default="scaffold", choices=["scaffold", "demo", "community-ready", "market-ready"])
     args = parser.parse_args(argv)
     version = normalize_version(args.version)
+    validate_version_alignment(version)
     dist = (REPO / args.dist_dir).resolve()
     if dist != REPO and not dist.is_relative_to(REPO):
         raise SystemExit(f"ERROR: --dist-dir must resolve inside the repo: {dist}")
     dist.mkdir(parents=True, exist_ok=True)
-    if args.release_type == "market-ready":
-        enforce_market_ready_gate()
+    gate: dict[str, object] | None = None
+    if args.release_type == "community-ready":
+        gate = enforce_release_gate("community-ready")
+    elif args.release_type == "market-ready":
+        gate = enforce_market_ready_gate()
+    if gate and git_commit() is None:
+        raise SystemExit(f"ERROR: {args.release_type} release requires a Git checkout with a resolved commit")
     validate_distribution_license()
     scan_source_tree()
     artifacts = [
@@ -54,14 +61,23 @@ def main(argv: list[str] | None = None) -> int:
     for artifact in artifacts:
         validate_zip(artifact["path"])
     manifest = {
+        "schema": "deepseek-harness-brain.release-manifest.v2",
         "product": "deepseek-harness-brain",
         "version": version,
         "release_type": args.release_type,
-        "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+        "generated_at": deterministic_release_datetime().isoformat(),
         "git_commit": git_commit(),
         "artifacts": [{"file": a["path"].name, "sha256": sha256_file(a["path"]), "bytes": a["path"].stat().st_size, "entries": a["entries"]} for a in artifacts],
-        "checks": ["repo source scan passed", "zip entry scan passed", "zip content secret scan passed", "zip content local-path scan passed"],
+        "checks": [
+            *([f"{args.release_type} audit passed"] if gate else []),
+            "repo source scan passed",
+            "zip entry scan passed",
+            "zip content secret scan passed",
+            "zip content local-path scan passed",
+        ],
     }
+    if gate:
+        manifest["gate"] = gate
     manifest_path = dist / "RELEASE_MANIFEST.json"
     manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     sums = dist / "SHA256SUMS"
@@ -71,12 +87,12 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
-def enforce_market_ready_gate() -> None:
+def enforce_release_gate(required_status: str) -> dict[str, object]:
     audit = REPO / "scripts" / "audit_brain.py"
     if not audit.exists():
-        raise SystemExit("ERROR: market-ready release blocked: missing scripts/audit_brain.py")
+        raise SystemExit(f"ERROR: {required_status} release blocked: missing scripts/audit_brain.py")
     proc = subprocess.run(
-        [sys.executable, str(audit), "--require", "market-ready", "--json"],
+        [sys.executable, str(audit), "--require", required_status, "--json"],
         cwd=REPO,
         text=True,
         capture_output=True,
@@ -84,7 +100,29 @@ def enforce_market_ready_gate() -> None:
     )
     if proc.returncode:
         detail = "\n".join(part for part in [proc.stdout.strip(), proc.stderr.strip()] if part)
-        raise SystemExit("ERROR: market-ready release blocked by audit:\n" + detail)
+        raise SystemExit(f"ERROR: {required_status} release blocked by audit:\n" + detail)
+    try:
+        result = json.loads(proc.stdout)
+    except ValueError as exc:
+        raise SystemExit(f"ERROR: {required_status} release blocked: audit returned invalid JSON: {exc}") from exc
+    allowed = {"community-ready", "market-ready"} if required_status == "community-ready" else {"market-ready"}
+    if result.get("status") not in allowed or result.get("critical_failures"):
+        raise SystemExit(f"ERROR: {required_status} release blocked: audit result is inconsistent")
+    release_status = REPO / "references" / "release-status.json"
+    release = json.loads(release_status.read_text(encoding="utf-8"))
+    return {
+        "required_maturity": required_status,
+        "observed_maturity": result["status"],
+        "score": result["score"],
+        "critical_failures": result["critical_failures"],
+        "release_status_schema": release.get("schema"),
+        "release_status_as_of": release.get("as_of"),
+        "release_status_sha256": sha256_file(release_status),
+    }
+
+
+def enforce_market_ready_gate() -> dict[str, object]:
+    return enforce_release_gate("market-ready")
 
 
 def normalize_version(value: str) -> str:
@@ -92,6 +130,56 @@ def normalize_version(value: str) -> str:
     if not re.fullmatch(r"\d+\.\d+\.\d+", version):
         raise SystemExit("ERROR: --version must look like 0.1.0")
     return version
+
+
+def validate_version_alignment(version: str) -> None:
+    surfaces: dict[str, str] = {}
+    patterns = {
+        "pyproject.toml": r'(?m)^version = "([^"]+)"$',
+        "deepseek_harness_brain/__init__.py": r'(?m)^__version__ = "([^"]+)"$',
+        "CITATION.cff": r"(?m)^version: ([^\s]+)$",
+    }
+    for rel, pattern in patterns.items():
+        match = re.search(pattern, (REPO / rel).read_text(encoding="utf-8"))
+        surfaces[rel] = match.group(1) if match else ""
+    plugin = json.loads((REPO / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
+    marketplace = json.loads((REPO / ".claude-plugin" / "marketplace.json").read_text(encoding="utf-8"))
+    release = json.loads((REPO / "references" / "release-status.json").read_text(encoding="utf-8"))
+    surfaces[".claude-plugin/plugin.json"] = plugin.get("version", "")
+    surfaces[".claude-plugin/marketplace.json metadata"] = marketplace.get("metadata", {}).get("version", "")
+    surfaces[".claude-plugin/marketplace.json plugin"] = marketplace.get("plugins", [{}])[0].get("version", "")
+    surfaces["references/release-status.json"] = release.get("release_version", "")
+    mismatched = [f"{name}={actual or '<missing>'}" for name, actual in surfaces.items() if actual != version]
+    if f"## {version} " not in (REPO / "CHANGELOG.md").read_text(encoding="utf-8"):
+        mismatched.append("CHANGELOG.md=<missing release heading>")
+    if mismatched:
+        raise SystemExit("ERROR: release version does not match metadata: " + ", ".join(mismatched))
+
+
+def deterministic_release_datetime() -> datetime:
+    epoch = os.environ.get("SOURCE_DATE_EPOCH", "").strip()
+    if epoch:
+        try:
+            return datetime.fromtimestamp(int(epoch), tz=timezone.utc).replace(microsecond=0)
+        except (OverflowError, ValueError) as exc:
+            raise SystemExit("ERROR: SOURCE_DATE_EPOCH must be a valid Unix timestamp") from exc
+    release = json.loads((REPO / "references" / "release-status.json").read_text(encoding="utf-8"))
+    try:
+        return datetime.fromisoformat(str(release["as_of"]) + "T00:00:00+00:00")
+    except (KeyError, ValueError) as exc:
+        raise SystemExit("ERROR: release-status.json requires a valid as_of date") from exc
+
+
+def write_zip_member(zf: zipfile.ZipFile, path: Path, arcname: str) -> None:
+    timestamp = deterministic_release_datetime()
+    if timestamp.year < 1980:
+        timestamp = datetime(1980, 1, 1, tzinfo=timezone.utc)
+    info = zipfile.ZipInfo(arcname, date_time=timestamp.timetuple()[:6])
+    info.create_system = 3
+    mode = 0o755 if path.stat().st_mode & stat.S_IXUSR else 0o644
+    info.external_attr = (stat.S_IFREG | mode) << 16
+    info.compress_type = zipfile.ZIP_DEFLATED
+    zf.writestr(info, path.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
 
 
 def validate_distribution_license() -> None:
@@ -189,10 +277,10 @@ def build_zip(out: Path, source: Path, root_name: str) -> dict[str, object]:
     entries = 0
     with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         for path in iter_tree(source):
-            zf.write(path, (Path(root_name) / path.relative_to(source)).as_posix())
+            write_zip_member(zf, path, (Path(root_name) / path.relative_to(source)).as_posix())
             entries += 1
-        for relative in (Path("LICENSE"), Path("THIRD_PARTY_NOTICES.md"), Path("licenses/DEEPSEEK-HARNESS-MIT.txt")):
-            zf.write(REPO / relative, (Path(root_name) / relative).as_posix())
+        for relative in (Path("LICENSE"), Path("THIRD_PARTY_NOTICES.md"), Path("licenses/DEEPSEEK-HARNESS-MIT.txt"), Path("references/public-capture-allowlist.json")):
+            write_zip_member(zf, REPO / relative, (Path(root_name) / relative).as_posix())
             entries += 1
     return {"path": out, "entries": entries}
 
@@ -203,7 +291,7 @@ def build_source_zip(out: Path, version: str) -> dict[str, object]:
         for path in source_files():
             rel = path.relative_to(REPO)
             if not should_skip(rel):
-                zf.write(path, (Path(f"deepseek-harness-brain-v{version}") / rel).as_posix())
+                write_zip_member(zf, path, (Path(f"deepseek-harness-brain-v{version}") / rel).as_posix())
                 entries += 1
     return {"path": out, "entries": entries}
 

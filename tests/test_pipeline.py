@@ -24,8 +24,8 @@ def run(args: list[str], *, env: dict[str, str] | None = None) -> subprocess.Com
     return proc
 
 
-def run_cmd(args: list[str], *, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
-    proc = subprocess.run(args, cwd=REPO, text=True, capture_output=True, env={**os.environ, **(env or {})}, check=False)
+def run_cmd(args: list[str], *, env: dict[str, str] | None = None, cwd: Path = REPO) -> subprocess.CompletedProcess[str]:
+    proc = subprocess.run(args, cwd=cwd, text=True, capture_output=True, env={**os.environ, **(env or {})}, check=False)
     if proc.returncode:
         print(proc.stdout)
         print(proc.stderr, file=sys.stderr)
@@ -40,6 +40,22 @@ def main() -> int:
     package_module = importlib.util.module_from_spec(package_spec)
     package_spec.loader.exec_module(package_module)
     scan_bytes = package_module.scan_bytes
+
+    audit_spec = importlib.util.spec_from_file_location("deepseek_harness_audit_brain", REPO / "scripts" / "audit_brain.py")
+    if audit_spec is None or audit_spec.loader is None:
+        raise AssertionError("unable to load repository audit_brain.py")
+    audit_module = importlib.util.module_from_spec(audit_spec)
+    audit_spec.loader.exec_module(audit_module)
+
+    try:
+        package_module.validate_version_alignment("9.9.9")
+    except SystemExit:
+        pass
+    else:
+        raise AssertionError("release version alignment accepted a mismatched version")
+    release_status = json.loads((REPO / "references" / "release-status.json").read_text(encoding="utf-8"))
+    assert audit_module.validate_release_status_shape(release_status) == []
+    assert any("unknown field" in note for note in audit_module.validate_release_status_shape({**release_status, "unexpected": True}))
 
     for suffix in (".mjs", ".svg"):
         try:
@@ -71,7 +87,12 @@ def main() -> int:
     run(["scripts/hash_vault.py", "--vault", "examples/sample-vault", "--check", "tests/fixtures/sample-vault.sha256"])
     audit = run(["scripts/audit_brain.py", "--json", "--report-only"])
     audit_result = json.loads(audit.stdout)
-    market_ready = audit_result.get("market_ready") is True or audit_result.get("status") == "market-ready"
+    assert audit_result.get("status") == "community-ready"
+    assert audit_result.get("community_ready") is True
+    assert audit_result.get("market_ready") is False
+    market_ready = audit_result.get("market_ready")
+    assert isinstance(market_ready, bool)
+    assert (audit_result.get("status") == "market-ready") is market_ready
     gated = subprocess.run([PY, "scripts/package_release.py", "--version", "0.2.0", "--release-type", "market-ready"], cwd=REPO, text=True, capture_output=True, check=False)
     if market_ready:
         if gated.returncode:
@@ -84,8 +105,25 @@ def main() -> int:
     else:
         assert gated.returncode != 0
         assert "market-ready release blocked" in gated.stderr
-    run(["scripts/package_release.py", "--version", "0.2.0", "--release-type", "demo"])
+    run(["scripts/package_release.py", "--version", "0.2.0", "--release-type", "community-ready"])
     assert (REPO / "dist" / "RELEASE_MANIFEST.json").exists()
+    release_manifest = json.loads((REPO / "dist" / "RELEASE_MANIFEST.json").read_text(encoding="utf-8"))
+    assert release_manifest.get("schema") == "deepseek-harness-brain.release-manifest.v2"
+    assert release_manifest.get("release_type") == "community-ready"
+    assert release_manifest.get("gate", {}).get("required_maturity") == "community-ready"
+    assert release_manifest.get("gate", {}).get("observed_maturity") == "community-ready"
+    assert release_manifest.get("gate", {}).get("release_status_schema") == "deepseek-harness-brain.release-status.v2"
+    assert len(release_manifest.get("gate", {}).get("release_status_sha256", "")) == 64
+    release_outputs = [
+        REPO / "dist" / "deepseek-harness-brain-template-v0.2.0.zip",
+        REPO / "dist" / "deepseek-harness-brain-sample-vault-v0.2.0.zip",
+        REPO / "dist" / "deepseek-harness-brain-source-v0.2.0.zip",
+        REPO / "dist" / "RELEASE_MANIFEST.json",
+        REPO / "dist" / "SHA256SUMS",
+    ]
+    first_release = {path.name: path.read_bytes() for path in release_outputs}
+    run(["scripts/package_release.py", "--version", "0.2.0", "--release-type", "community-ready"])
+    assert first_release == {path.name: path.read_bytes() for path in release_outputs}
     for artifact_name in (
         "deepseek-harness-brain-template-v0.2.0.zip",
         "deepseek-harness-brain-sample-vault-v0.2.0.zip",
@@ -95,6 +133,7 @@ def main() -> int:
             assert any(name.endswith("/LICENSE") for name in names)
             assert any(name.endswith("/THIRD_PARTY_NOTICES.md") for name in names)
             assert any(name.endswith("/licenses/DEEPSEEK-HARNESS-MIT.txt") for name in names)
+            assert any(name.endswith("/references/public-capture-allowlist.json") for name in names)
     with tempfile.TemporaryDirectory(prefix="deepseek-harness-brain-install-") as tmp:
         env = {"DEEPSEEK_HARNESS_BRAIN_INSTALL_HOME": tmp}
         run_cmd(["bash", "install.sh", "--target", "all"], env=env)
@@ -105,7 +144,18 @@ def main() -> int:
         assert "deepseek-harness-brain-install:start" in (Path(tmp) / ".gemini" / "GEMINI.md").read_text(encoding="utf-8")
         custom_root = Path(tmp) / "custom-skills"
         run_cmd(["bash", "install.sh", "--target", "custom", "--path", str(custom_root)], env=env)
-        assert (custom_root / "deepseek-harness-brain" / "SKILL.md").exists()
+        custom_install = custom_root / "deepseek-harness-brain"
+        assert (custom_install / "SKILL.md").exists()
+        assert (custom_install / "deepseek_harness_brain" / "determinism.py").exists()
+        isolated_vaults = Path(tmp) / "isolated-vaults"
+        run_cmd(
+            [PY, "-S", str(custom_install / "scripts" / "scaffold_vault.py"), "--client", "isolated", "--client-name", "Isolated Test", "--owner", "Test Owner", "--out-dir", str(isolated_vaults), "--as-of", "2026-08-21"],
+            cwd=Path(tmp),
+        )
+        run_cmd(
+            [PY, "-S", str(custom_install / "scripts" / "lint_vault.py"), "--vault", str(isolated_vaults / "isolated")],
+            cwd=Path(tmp),
+        )
         run_cmd(["bash", "uninstall.sh", "--target", "all"], env=env)
         assert not (Path(tmp) / ".codex" / "skills" / "deepseek-harness-brain").exists()
         assert not (Path(tmp) / ".gemini" / "deepseek-harness-brain").exists()

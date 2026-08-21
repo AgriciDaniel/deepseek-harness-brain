@@ -29,11 +29,11 @@ DeepSeek Harness Brain is an advisory, read-only Obsidian brain for DeepSeek Har
 - Generated catalogs and bilingual derivatives may drift if hand-edited instead of regenerated through repository gates
 - Local build artifacts may be mistaken for tracked source or current release evidence
 
-## Maturity Boundary
+## Release Boundary
 
-The highest verified maturity is `demo-verified` for internal use. The source
-and adapter gates, deterministic demo, source citations, graph checks, and local
-release pipeline pass. Market-ready remains false because browser, live-provider,
-native, cross-platform, comprehensive security-audit, and production-scale
-evidence remain open. The audit score is capped below 90 until an explicit
-human-reviewed market-ready decision and every required gate pass.
+Version 0.2.0 is community-ready. The source and adapter gates, deterministic
+sample vault, source citations, graph checks, license and attribution review,
+privacy scans, and community packaging pipeline pass. Market-ready remains false
+because browser, live-provider, native, cross-platform, comprehensive
+security-audit, and production-scale evidence remain open. Those stronger claims
+require their own evidence and an explicit human-reviewed market decision.

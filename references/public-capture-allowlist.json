@@ -1,0 +1,111 @@
+{
+  "schema": "deepseek-harness-brain.public-capture-allowlist.v1",
+  "reviewed_at": "2026-08-21",
+  "upstream_commit": "b150a551b8d465e31e418e1b2eaf5e79bbb7d28e",
+  "captures": [
+    {
+      "path": ".raw/sources/README.md",
+      "sha256": "cd7f5d59b4e9c27bb6a0480b131a7e0712ac0d33dd5b3a02deba7e5318dfcc38",
+      "vaults": ["template", "sample"],
+      "origin_url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/README.md",
+      "license": "MIT",
+      "reviewed_for_redistribution": true
+    },
+    {
+      "path": ".raw/sources/AGENTS.md",
+      "sha256": "ad0a802faf7b884b2465fce4cfac4fecc8602f3afb34b206e83628ad1a6e4907",
+      "vaults": ["template", "sample"],
+      "origin_url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/AGENTS.md",
+      "license": "MIT",
+      "reviewed_for_redistribution": true
+    },
+    {
+      "path": ".raw/sources/package.json",
+      "sha256": "4adbdffa373754a048a214c5de3ec0671ac6e1f3c1521ec5b37e8fad1a4986d7",
+      "vaults": ["template", "sample"],
+      "origin_url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/package.json",
+      "license": "MIT",
+      "reviewed_for_redistribution": true
+    },
+    {
+      "path": ".raw/sources/architecture.md",
+      "sha256": "6a6e9d4fdb582661d2f27ad14ec4bee287ba7b764963b96964a54435662fd55b",
+      "vaults": ["template", "sample"],
+      "origin_url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/docs/architecture.md",
+      "license": "MIT",
+      "reviewed_for_redistribution": true
+    },
+    {
+      "path": ".raw/sources/agent-lifecycle.md",
+      "sha256": "348a63eebf0e704a44c9ececd22a4ebcbf0691161ab4a81790f96f7d4a743f9d",
+      "vaults": ["template", "sample"],
+      "origin_url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/docs/agent-lifecycle.md",
+      "license": "MIT",
+      "reviewed_for_redistribution": true
+    },
+    {
+      "path": ".raw/sources/capability-seams.md",
+      "sha256": "da2222f7cdabd259da3c676f9ea5e1fd0f11422f90604954c8049dba40d833ae",
+      "vaults": ["template", "sample"],
+      "origin_url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/docs/capability-seams.md",
+      "license": "MIT",
+      "reviewed_for_redistribution": true
+    },
+    {
+      "path": ".raw/sources/tool-execution-pipeline.md",
+      "sha256": "4f2f0a8459db2da876c445bb86d66d909b8f648c2c03855217274d8067cad243",
+      "vaults": ["template", "sample"],
+      "origin_url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/docs/tool-execution-pipeline.md",
+      "license": "MIT",
+      "reviewed_for_redistribution": true
+    },
+    {
+      "path": ".raw/sources/defensive-patterns.md",
+      "sha256": "919d27a033c655ea6187496872caa4aa9babf08d87179562ca23545301108bb1",
+      "vaults": ["template", "sample"],
+      "origin_url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/docs/defensive-patterns.md",
+      "license": "MIT",
+      "reviewed_for_redistribution": true
+    },
+    {
+      "path": ".raw/sources/testing.md",
+      "sha256": "f47370270ceee93392660f8982c8e293883c1dd2cb625e580814a67474660036",
+      "vaults": ["template", "sample"],
+      "origin_url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/docs/testing.md",
+      "license": "MIT",
+      "reviewed_for_redistribution": true
+    },
+    {
+      "path": ".raw/sources/development.md",
+      "sha256": "b7eb2eb7cd8b871dc61e5c734f66b0f505e3315f077c3c679d9f5a286be2bd30",
+      "vaults": ["template", "sample"],
+      "origin_url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/docs/development.md",
+      "license": "MIT",
+      "reviewed_for_redistribution": true
+    },
+    {
+      "path": ".raw/sources/cordis.patch.yml",
+      "sha256": "9870a518274194c0e1ebd870cee2737fbc2ffc04ae36887871ffe6fcf74beac1",
+      "vaults": ["template", "sample"],
+      "origin_url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/packages/bundle/base/cordis.patch.yml",
+      "license": "MIT",
+      "reviewed_for_redistribution": true
+    },
+    {
+      "path": ".raw/sources/README-d3c5d7708c5f.md",
+      "sha256": "d3c5d7708c5faf4a7394f67e50cf12510191f4ef0fc2925e789a037e5e5f5390",
+      "vaults": ["template", "sample"],
+      "origin_url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/packages/core/agent-loop/README.md",
+      "license": "MIT",
+      "reviewed_for_redistribution": true
+    },
+    {
+      "path": ".raw/sources/sample-source.md",
+      "sha256": "2e38d8e01cf3d6ead00a47a6405a266e0f1086488ad8d5bb9480ac49e68e3983",
+      "vaults": ["sample"],
+      "origin_path": "tests/fixtures/sample-source.md",
+      "license": "MIT",
+      "reviewed_for_redistribution": true
+    }
+  ]
+}

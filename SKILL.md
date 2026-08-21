@@ -61,6 +61,10 @@ deepseek-harness-brain report --vault <path> --html-only
 
 ## Script Mapping
 
+The plugin tool allowlist is intentionally read-only. These commands document
+bounded repository scripts for the user or an explicitly authorized shell
+workflow. Loading the skill alone does not grant an agent write authority.
+
 - `new` -> `python scripts/scaffold_vault.py`
 - `ingest` -> `python scripts/ingest_source.py`
 - `import-checkout` -> `python scripts/import_deepseek_harness.py`
@@ -85,6 +89,9 @@ deepseek-harness-brain report --vault <path> --html-only
 Do not call this brain market-ready unless `scripts/audit_brain.py --require
 market-ready` passes and `references/release-status.json` records an explicit
 human-reviewed market-ready decision. Demo verification is not market readiness.
+Community readiness covers safe distribution of this knowledge base. It does not
+claim browser, live-provider, native, cross-platform, security-audit, or
+production-scale runtime evidence.
 
 ## Research Refresh
 

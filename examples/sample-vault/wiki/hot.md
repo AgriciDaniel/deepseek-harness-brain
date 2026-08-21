@@ -15,9 +15,9 @@ source_urls: ["https://github.com/deepseek-ai/deepseek-harness/tree/b150a551b8d4
 
 ## Current State
 
-The brain is demo-verified for internal use at commit `b150a551`. Its content-addressed checkout importer, curated portability rules, Cordis fork-delta analysis, deterministic vault hash, strict brain validation, and four keyless architecture probes pass. Build and public typecheck passed earlier on this Linux x64 host.
+The repository is community-ready for distribution review at commit `b150a551`. Its content-addressed checkout importer, curated portability rules, Cordis fork-delta analysis, deterministic vault hash, strict brain validation, and four keyless architecture probes pass. Build and public typecheck passed earlier on this Linux x64 host.
 
-Market-ready remains false. No browser, live-provider, native, cross-platform, exhaustive security, or production-scale proof exists. Brainstein’s generic maturity label does not override the explicit product release-status guard.
+The knowledge base remains demo-verified, and market-ready remains false. No browser, live-provider, native, cross-platform, exhaustive security, or production-scale proof exists. Brainstein’s generic maturity label does not override the explicit product release-status guard.
 
 ## Next Action
 

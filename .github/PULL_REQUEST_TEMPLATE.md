@@ -35,4 +35,4 @@ Checks not run, with reason:
 - [ ] Raw-source immutability and manifest coverage are preserved.
 - [ ] New domain claims cite dated trustworthy sources.
 - [ ] Generated outputs were changed through their owning generator.
-- [ ] This change does not claim market readiness without the explicit release gate.
+- [ ] This change does not claim community or market readiness without the matching release gate.

@@ -23,7 +23,8 @@ source_urls: ["https://github.com/deepseek-ai/deepseek-harness/tree/b150a551b8d4
 | Strict validation | Green | Pipeline and Brainstein strict validation with tests passed |
 | Browser and live provider | No evidence | Not run |
 | Native, cross-platform, production scale | No evidence | Not run |
-| Product maturity | Demo-verified | Local release-aware audit score 89 |
+| Knowledge maturity | Demo-verified | Source and runtime evidence boundary |
+| Distribution readiness | Community-ready | Release audit, attribution, privacy, and packaging gates |
 | Market readiness | Blocked | Explicit release status is false |
 
 Related: [[Action Roadmap]] | [[Portability Matrix]] | [[Known Limitations and Open Risks]]

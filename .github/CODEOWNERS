@@ -1,1 +1,8 @@
 * @AgriciDaniel
+/.github/ @AgriciDaniel
+/scripts/audit_brain.py @AgriciDaniel
+/scripts/package_release.py @AgriciDaniel
+/references/release-status.json @AgriciDaniel
+/references/schemas/release-status.schema.json @AgriciDaniel
+/RELEASE_CHECKLIST.md @AgriciDaniel
+/PUBLISHING_NOTICE.md @AgriciDaniel

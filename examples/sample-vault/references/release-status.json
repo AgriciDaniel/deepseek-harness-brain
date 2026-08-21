@@ -1,14 +1,33 @@
 {
-  "schema": "deepseek-harness-brain.release-status.v1",
+  "schema": "deepseek-harness-brain.release-status.v2",
   "as_of": "2026-08-21",
+  "release_version": "0.2.0",
+  "distribution_target": "community-ready",
+  "knowledge_maturity": "demo-verified",
+  "human_publication_decision": "pending",
+  "repository_reviewed_at": "2026-08-21",
   "market_ready": false,
-  "highest_verified_maturity": "demo-verified",
-  "reason": "Internal deterministic adapter and vault checks do not prove browser, live-provider, native, cross-platform, security-audit, or production-scale behavior.",
-  "unverified_tiers": [
+  "repository_review": {
+    "actions_permissions": true,
+    "branch_protection": true,
+    "required_ci": true,
+    "codeowners": true,
+    "security_policy": true,
+    "private_reporting_plan": true
+  },
+  "decision": "Prepared as a community-ready release candidate. Public visibility, tagging, and GitHub release publication remain owner decisions.",
+  "verified_release_evidence": [
+    "allowlisted source capture and domain adapter tests",
+    "deterministic template and sample vault checks",
+    "local pipeline and community packaging gate",
+    "license, attribution, secret, local-path, symlink, and archive checks"
+  ],
+  "unverified_runtime_tiers": [
     "interactive Web profile",
     "live DeepSeek provider",
     "macOS, Windows, and ARM",
     "native and Python release packaging",
+    "comprehensive independent security audit",
     "complete repository test and release matrix",
     "production load and long-running durability"
   ]

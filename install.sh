@@ -64,10 +64,17 @@ install_one() {
   if [ -d "${source_dir}/agents" ]; then
     copy_tree "${source_dir}/agents" "${dest}/agents"
   fi
+  copy_tree "${source_dir}/deepseek_harness_brain" "${dest}/deepseek_harness_brain"
   copy_tree "${source_dir}/scripts" "${dest}/scripts"
   copy_tree "${source_dir}/assets/template-brain" "${dest}/assets/template-brain"
   copy_tree "${source_dir}/references" "${dest}/references"
   copy_tree "${source_dir}/docs" "${dest}/docs"
+  if [ -d "${source_dir}/licenses" ]; then
+    copy_tree "${source_dir}/licenses" "${dest}/licenses"
+  fi
+  if [ -f "${source_dir}/THIRD_PARTY_NOTICES.md" ]; then
+    cp "${source_dir}/THIRD_PARTY_NOTICES.md" "${dest}/THIRD_PARTY_NOTICES.md"
+  fi
   chmod -R go-rwx "${dest}"
   echo "DeepSeek Harness Brain installed to ${dest}"
 }

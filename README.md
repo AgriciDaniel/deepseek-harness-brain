@@ -7,20 +7,20 @@
 <p align="center">
   <a href="https://github.com/AgriciDaniel/deepseek-harness-brain/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/AgriciDaniel/deepseek-harness-brain/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-39c5ff"></a>
-  <img alt="Maturity: demo-verified" src="https://img.shields.io/badge/maturity-demo--verified-4b7bec">
+  <img alt="Release 0.2.0" src="https://img.shields.io/badge/release-v0.2.0-4b7bec">
   <img alt="Python 3.11 or newer" src="https://img.shields.io/badge/python-3.11%2B-163a5f">
 </p>
 
-An evidence-gated Obsidian brain for understanding, reviewing, extending, and selectively porting ideas from [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness).
+DeepSeek Harness Brain 0.2.0 is an independent, evidence-gated Obsidian knowledge
+base for understanding, reviewing, extending, and selectively porting ideas from
+[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness). This
+community release candidate was validated against upstream commit
+`b150a551b8d465e31e418e1b2eaf5e79bbb7d28e` with deterministic importer, vault,
+pipeline, and packaging checks.
 
-> **Status:** Demo-verified for internal use. Not market-ready.
->
-> Reviewed upstream commit: `b150a551b8d465e31e418e1b2eaf5e79bbb7d28e`.
-> Browser, live-provider, native, cross-platform, comprehensive security-audit,
-> and production-scale evidence remain open.
->
-> This is an independent community research project. It is not affiliated with
-> or endorsed by DeepSeek.
+Browser, live-provider, native, cross-platform, comprehensive security-audit,
+and production-scale behavior remain outside the verified release evidence.
+This project is not affiliated with or endorsed by DeepSeek.
 
 ## Outputs
 
@@ -54,11 +54,7 @@ Evidence enters through pinned, content-addressed source capture. Curated rules
 turn that evidence into linked notes, ledgers, portability guidance, and reports.
 Deterministic checks prevent prose alone from claiming a stronger maturity tier.
 
-<p align="center">
-  <img src="assets/images/portable-harness-modules.webp" alt="An original illustration of seven portable harness modules connected by a verification flow" width="100%"/>
-</p>
-
-## Who this is for (buyer)
+## Who this is for
 
 - Developers evaluating DeepSeek Harness architecture.
 - Teams deciding which harness patterns to port into existing applications.
@@ -138,10 +134,12 @@ python tests/test_pipeline.py
 python scripts/audit_brain.py --json --report-only
 ```
 
-The committed sample vault also has a deterministic tree hash. The local
-release-aware audit currently caps this repository at `demo-verified`, score 89.
-Brainstein's generic anatomy score is useful structural feedback, but it does
-not override the explicit release-status guard.
+The v0.2.0 community release candidate passed the local release audit and
+packaging gate.
+The [release status](references/release-status.json) records exactly what was
+verified and which runtime tiers remain outside the evidence. Brainstein's
+generic anatomy score remains useful structural feedback, but it does not
+override the explicit release-status guard.
 
 ## Community
 
