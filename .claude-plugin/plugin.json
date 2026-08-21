@@ -1,0 +1,26 @@
+{
+  "name": "deepseek-harness-brain",
+  "version": "0.2.0",
+  "description": "DeepSeek Harness Brain Obsidian brain for DeepSeek Harness architecture, operations, extension development, security, testing, and debugging.",
+  "author": {
+    "name": "Daniel Agrici",
+    "url": "https://github.com/AgriciDaniel"
+  },
+  "homepage": "https://github.com/AgriciDaniel/deepseek-harness-brain",
+  "repository": "https://github.com/AgriciDaniel/deepseek-harness-brain",
+  "license": "MIT",
+  "keywords": [
+    "deepseek-harness-brain",
+    "obsidian",
+    "brain",
+    "deepseek-harness"
+  ],
+  "skills": [
+    "./SKILL.md"
+  ],
+  "allowed-tools": [
+    "Read",
+    "Grep",
+    "Glob"
+  ]
+}

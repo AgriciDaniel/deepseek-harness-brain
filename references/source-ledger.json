@@ -1,0 +1,365 @@
+{
+  "schema": "brainstein.source-ledger.v1",
+  "generated_at": "2026-08-21",
+  "domain": "DeepSeek Harness architecture, operations, extension development, security, testing, and debugging",
+  "refresh_cadence": "on every upstream release or architecture change, and monthly while developer preview continues",
+  "status": "researched",
+  "pinned_commit": "b150a551b8d465e31e418e1b2eaf5e79bbb7d28e",
+  "sources": [
+    {
+      "id": "dsh-repository",
+      "title": "DeepSeek Harness source repository at pinned commit",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/tree/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "The reviewed checkout is version 0.1.1-rc.2 at commit b150a551b8d465e31e418e1b2eaf5e79bbb7d28e.",
+        "The repository is an MIT-licensed developer-preview agent harness maintained by DeepSeek AI.",
+        "The tracked repository contains TypeScript, Python, native, Web, documentation, example, and vendored Cordis surfaces."
+      ]
+    },
+    {
+      "id": "dsh-root-readme",
+      "title": "DeepSeek Harness README",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/README.md",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "DeepSeek Harness describes itself as an open-source agent harness where everything is a plugin.",
+        "The project is in developer preview and explicitly allows compatibility-breaking changes.",
+        "The documented source workflow is pnpm install, pnpm run build, then pnpm dsh web."
+      ]
+    },
+    {
+      "id": "dsh-agent-orders",
+      "title": "DeepSeek Harness repository agent instructions",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/AGENTS.md",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "New behavior belongs on documented plugin extension points rather than in the agent loop.",
+        "Model-visible inputs must be reconstructable from the session log.",
+        "Registrations are reversible effects and capability seams require definition, provider, and consumer roles."
+      ]
+    },
+    {
+      "id": "dsh-architecture",
+      "title": "DeepSeek Harness architecture",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/docs/architecture.md",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "Profiles stack bundles and patch layers over an initially empty Cordis entry list.",
+        "Session events are durable facts while agent and capability events control live work.",
+        "The core turn flow admits input, assembles prompt and tools, streams a model request, executes tools, and closes the turn."
+      ]
+    },
+    {
+      "id": "dsh-agent-lifecycle",
+      "title": "Agent turn and step lifecycle",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/docs/agent-lifecycle.md",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "A step contains one model request plus its tools, while a turn contains zero or more steps.",
+        "The pre-step decision may reject the proposed step or replace the complete entered message batch.",
+        "SDK transcript consumers should use session events, while agent events are the live coordination API."
+      ]
+    },
+    {
+      "id": "dsh-capability-seams",
+      "title": "Capability seams and core services",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/docs/capability-seams.md",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "The generated capability graph distinguishes service declarations, providers, and direct consumers.",
+        "Provider replacement changes all consumers behind the same service interface.",
+        "Filesystem, subprocess, sandbox, approval, LLM, persistence, and subagents are separate services."
+      ]
+    },
+    {
+      "id": "dsh-tool-pipeline",
+      "title": "Tool execution pipeline",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/docs/tool-execution-pipeline.md",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "Tool execution runs pre-execute policy, monotonic guards, execution, post-execute rewriting, finalization, and immutable result observation.",
+        "Approval resolves one-shot asks before monotonic owner guards.",
+        "A single tool result is the model-facing outcome after pipeline normalization and finalization."
+      ]
+    },
+    {
+      "id": "dsh-defensive-patterns",
+      "title": "Defensive lifecycle and concurrency patterns",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/docs/defensive-patterns.md",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "Orthogonal outcomes such as timeout, signal, and exit code must be reported independently.",
+        "Disposal must reach quiescence rather than merely request cancellation.",
+        "Spawned commands receive a scrubbed environment and private unpredictable temporary paths."
+      ]
+    },
+    {
+      "id": "dsh-testing-policy",
+      "title": "DeepSeek Harness testing policy",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/docs/testing.md",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "Unit, coverage, real-API, transcript snapshot, and browser snapshot tiers prove different things.",
+        "The coverage gate requires per-file 100 percent on package source but is explicitly insufficient by itself.",
+        "Product-visible plugins require a real Loader composition test and built entrypoints require built-artifact smokes."
+      ]
+    },
+    {
+      "id": "dsh-development-guide",
+      "title": "DeepSeek Harness development guide",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/docs/development.md",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "The repository supports Node 22.19 and later in the 22 line, plus Node 24 and later, with pnpm 11.7.0.",
+        "Host and Client compile as separate TypeScript aggregate programs because their Cordis Context merges would collide.",
+        "Built-artifact consumers require a preceding build."
+      ]
+    },
+    {
+      "id": "dsh-base-composition",
+      "title": "DeepSeek Harness base bundle composition",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/packages/bundle/base/cordis.patch.yml",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "The shipped base profile defaults to workspace-write sandbox mode and ask approval unless explicitly overridden.",
+        "Danger-full-access pairs an unrestricted sandbox mode with never-ask approval.",
+        "The base composition mounts service, policy, provider, tool, persistence, compaction, subagent, workflow, and Web-search rows."
+      ]
+    },
+    {
+      "id": "dsh-agent-loop-contract",
+      "title": "Concrete agent-loop package contract",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/packages/core/agent-loop/README.md",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "Agent creation and resume use rollback-covered publication with owned teardown.",
+        "Followup, steer, and inject differ by target inbox and wake behavior.",
+        "Parallel-safe tool bodies may overlap, while policy and durable results remain model ordered."
+      ]
+    },
+    {
+      "id": "dsh-cordis-primer",
+      "title": "DeepSeek Harness Cordis primer",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/docs/cordis-primer.md",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "Cordis supplies the context, plugin, service, event, scope, and effect substrate used by the Harness.",
+        "Effect ownership and disposal are central to dynamic plugin correctness."
+      ]
+    },
+    {
+      "id": "dsh-vendor-ledger",
+      "title": "Vendored Cordis package provenance table",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/vendor/README.md",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "The repository records upstream package versions and local vendored package paths.",
+        "The recorded upstream Cordis baseline is 4.0.0-rc.7 while the local cordis manifest is 4.0.1."
+      ]
+    },
+    {
+      "id": "dsh-cordis-fiber",
+      "title": "Vendored Cordis Fiber lifecycle implementation",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/vendor/cordis/src/fiber.ts",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "The local Fiber implements explicit lifecycle state, effect ownership, child scopes, and quiescent disposal behavior."
+      ]
+    },
+    {
+      "id": "dsh-loader-reconciliation",
+      "title": "Vendored loader configuration reconciliation",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/vendor/loader/src/config/entry.ts",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "Configuration changes prepare and settle candidate state before committing it.",
+        "Failure attempts restoration, but restoration can also fail, so the behavior is rollback-covered rather than strictly atomic."
+      ]
+    },
+    {
+      "id": "dsh-include-config",
+      "title": "Vendored include and YAML configuration loader",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/vendor/include/src/index.ts",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "The configuration surface supports JavaScript-valued YAML tags and must be treated as trusted configuration input."
+      ]
+    },
+    {
+      "id": "dsh-session-runtime",
+      "title": "Session event runtime",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/packages/core/session/src/index.ts",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "Session append validates contiguous sequence and stores immutable JSON event snapshots.",
+        "Model messages are derived from the committed event history."
+      ]
+    },
+    {
+      "id": "dsh-request-invariant",
+      "title": "Agent request reconstruction invariant",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/packages/core/agent-loop/src/invariant.ts",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "The agent loop checks that each model-visible request can be reconstructed from session evidence."
+      ]
+    },
+    {
+      "id": "dsh-tools-runtime",
+      "title": "Tool registry and execution runtime",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/packages/core/tools/src/index.ts",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "Tool registration is reversible and duplicate names are rejected.",
+        "Policy denial prevents the tool body from executing and produces one normalized final result."
+      ]
+    },
+    {
+      "id": "dsh-prompt-runtime",
+      "title": "System prompt and tool-schema assembly runtime",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/packages/core/system-prompt/src/index.ts",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "Prompt sections and effective tool schemas are assembled through ordered, disposable contributions."
+      ]
+    },
+    {
+      "id": "dsh-llm-runtime",
+      "title": "Provider-neutral LLM service runtime",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/packages/llm/llm/src/index.ts",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "Prepared model calls bind an adapter route before dispatch and expose a provider-neutral stream contract."
+      ]
+    },
+    {
+      "id": "dsh-persistence-runtime",
+      "title": "Session persistence service contract",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/packages/session/session-persistence/src/index.ts",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "Persistence exposes explicit append, load, and flush semantics.",
+        "The contract must not be restated as crash durability without provider-specific evidence."
+      ]
+    },
+    {
+      "id": "dsh-approval-runtime",
+      "title": "User approval service runtime",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/packages/interaction/user-approval/src/index.ts",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "Approval uses one-shot decisions with explicit policy and cancellation behavior."
+      ]
+    },
+    {
+      "id": "dsh-sandbox-runtime",
+      "title": "Sandbox service contract",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/packages/sandbox/sandbox/src/index.ts",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "The sandbox contract reports per-call mode, root, and enforcement evidence.",
+        "File-effect confinement is not by itself a complete hostile-code isolation guarantee."
+      ]
+    },
+    {
+      "id": "dsh-subagent-runtime",
+      "title": "Subagent service runtime",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/packages/subagent/subagent/src/index.ts",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "Subagent providers publish bounded runs with typed results, ownership, and disposal behavior."
+      ]
+    },
+    {
+      "id": "dsh-api-gateway",
+      "title": "API gateway request dispatcher",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/packages/api/gateway/src/index.ts",
+      "source_type": "official",
+      "retrieved": "2026-08-21",
+      "refresh_due": "2026-09-20",
+      "confidence": "high",
+      "claims": [
+        "The gateway separates request dispatch from transport ownership and uses explicit result and error behavior."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "deepseek-harness-brain.release-status.v1",
+  "as_of": "2026-08-21",
+  "market_ready": false,
+  "highest_verified_maturity": "demo-verified",
+  "reason": "Internal deterministic adapter and vault checks do not prove browser, live-provider, native, cross-platform, security-audit, or production-scale behavior.",
+  "unverified_tiers": [
+    "interactive Web profile",
+    "live DeepSeek provider",
+    "macOS, Windows, and ARM",
+    "native and Python release packaging",
+    "complete repository test and release matrix",
+    "production load and long-running durability"
+  ]
+}

@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>DeepSeek Harness, Plain-English Guide</title>
+  <style>
+    @page { size: A4; margin: 14mm 15mm 13mm; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: #202124;
+      font-family: "DejaVu Sans", Arial, sans-serif;
+      font-size: 10pt;
+      line-height: 1.42;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { font-size: 28pt; line-height: 1.08; letter-spacing: -0.8px; margin-bottom: 8px; }
+    h2 { font-size: 17pt; line-height: 1.2; margin-bottom: 9px; }
+    h3 { font-size: 11.5pt; margin-bottom: 4px; }
+    p { margin-bottom: 9px; }
+    .page { height: 267mm; padding-bottom: 10mm; overflow: hidden; position: relative; page-break-after: always; }
+    .page:last-child { page-break-after: auto; }
+    .eyebrow {
+      display: inline-block;
+      color: #0b57d0;
+      background: #e8f0fe;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 8pt;
+      font-weight: 700;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .subtitle { color: #5f6368; font-size: 14pt; max-width: 145mm; margin-bottom: 18px; }
+    .rule { display: flex; gap: 7px; margin: 14px 0 20px; }
+    .rule span { width: 42px; height: 5px; border-radius: 5px; }
+    .blue { background: #1a73e8; } .red { background: #d93025; }
+    .yellow { background: #f9ab00; } .green { background: #1e8e3e; }
+    .hero {
+      background: linear-gradient(135deg, #f8faff 0%, #edf5ff 55%, #f2fbf5 100%);
+      border: 1px solid #d9e5f5;
+      border-radius: 18px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+    }
+    .hero strong { color: #0b57d0; }
+    .status {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 14px 0 18px;
+    }
+    .status div, .card {
+      border: 1px solid #e1e5ea;
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: #fff;
+    }
+    .status .good { border-left: 5px solid #1e8e3e; }
+    .status .limit { border-left: 5px solid #f9ab00; }
+    .small { color: #5f6368; font-size: 8.5pt; }
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr 20px 1fr 20px 1fr;
+      align-items: center;
+      gap: 5px;
+      margin: 15px 0;
+    }
+    .flow .step { text-align: center; padding: 13px 8px; border-radius: 12px; background: #f8f9fa; border: 1px solid #e1e5ea; }
+    .flow .arrow { text-align: center; color: #5f6368; font-size: 16pt; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .card { break-inside: avoid; }
+    .card .number {
+      display: inline-block;
+      width: 23px;
+      height: 23px;
+      line-height: 23px;
+      text-align: center;
+      border-radius: 50%;
+      color: #fff;
+      background: #1a73e8;
+      font-size: 8.5pt;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+    .card p { color: #5f6368; margin-bottom: 0; font-size: 9.2pt; }
+    .recommend {
+      border-left: 5px solid #1e8e3e;
+      background: #eef8f1;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: 14px;
+    }
+    .list { margin: 7px 0 14px; padding-left: 20px; }
+    .list li { margin-bottom: 6px; }
+    .plain-table { width: 100%; border-collapse: collapse; margin: 10px 0 14px; }
+    .plain-table th, .plain-table td { border-bottom: 1px solid #e1e5ea; padding: 8px 7px; text-align: left; vertical-align: top; }
+    .plain-table th { color: #5f6368; font-size: 8.5pt; text-transform: uppercase; letter-spacing: .5px; }
+    .plain-table td:first-child { width: 36%; font-weight: 700; }
+    .plain-table th:nth-child(2), .plain-table td:nth-child(2) { padding-left: 18px; }
+    .warning { background: #fff8e6; border: 1px solid #f2d58a; border-radius: 12px; padding: 12px 14px; }
+    .footer { position: absolute; bottom: 1mm; left: 0; right: 0; display: flex; justify-content: space-between; color: #80868b; font-size: 7.5pt; }
+    .tag { color: #137333; background: #e6f4ea; border-radius: 999px; padding: 3px 8px; font-size: 8pt; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <section class="page">
+    <span class="eyebrow">Plain-English guide</span>
+    <h1>DeepSeek Harness</h1>
+    <p class="subtitle">What it is, where you can use it, and how you can shape it for your own applications.</p>
+    <div class="rule"><span class="blue"></span><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+
+    <div class="hero">
+      <h2>Think of it as an engine room for an AI assistant</h2>
+      <p>The Harness gives an AI agent the pieces it needs to work: a model, memory, tools, safety checks, approvals, and ways to interact with people.</p>
+      <p>Its main idea is simple: <strong>almost everything is replaceable</strong>. You can add, remove, or swap parts without rebuilding the whole assistant.</p>
+    </div>
+
+    <h2>Where we are today</h2>
+    <div class="status">
+      <div class="good">
+        <h3>Ready for learning and internal experiments</h3>
+        <p class="small">Installed locally, built successfully, checked, documented, and supported by a searchable brain.</p>
+      </div>
+      <div class="limit">
+        <h3>Still a developer-preview project</h3>
+        <p class="small">Expect changes. It should not yet be treated as a finished, stable product for critical production work.</p>
+      </div>
+    </div>
+
+    <h2>How it works</h2>
+    <div class="flow">
+      <div class="step"><strong>You ask</strong><br><span class="small">A goal or task</span></div>
+      <div class="arrow">›</div>
+      <div class="step"><strong>The agent plans</strong><br><span class="small">Uses memory and rules</span></div>
+      <div class="arrow">›</div>
+      <div class="step"><strong>Tools act</strong><br><span class="small">With checks and approval</span></div>
+    </div>
+
+    <p>The Harness keeps a reviewable history, prepares information for the model, controls available tools, and records the results.</p>
+
+    <div class="footer"><span>DeepSeek Harness, plain-English guide</span><span>1</span></div>
+  </section>
+
+  <section class="page">
+    <span class="eyebrow">Useful applications</span>
+    <h1 style="font-size:25pt">Where can you use it?</h1>
+    <p class="subtitle" style="font-size:12pt">The best fit is an AI assistant that needs tools, memory, control, or several interchangeable parts.</p>
+
+    <div class="grid">
+      <div class="card">
+        <span class="number">1</span>
+        <h3>Coding assistant</h3>
+        <p>Read files, suggest changes, run checks, keep a task history, and ask before sensitive actions.</p>
+      </div>
+      <div class="card">
+        <span class="number">2</span>
+        <h3>Research and review assistant</h3>
+        <p>Collect evidence, compare sources, produce reports, and preserve what supports each conclusion.</p>
+      </div>
+      <div class="card">
+        <span class="number">3</span>
+        <h3>Internal operations assistant</h3>
+        <p>Guide repeatable workflows, prepare actions, check rules, and leave important decisions to a person.</p>
+      </div>
+      <div class="card">
+        <span class="number">4</span>
+        <h3>Tool-using chat assistant</h3>
+        <p>Connect a conversational assistant to files, search, business services, or your own application functions.</p>
+      </div>
+      <div class="card">
+        <span class="number">5</span>
+        <h3>Multi-agent work</h3>
+        <p>Give bounded tasks to specialist agents, collect their results, and keep one owner responsible for the final answer.</p>
+      </div>
+      <div class="card">
+        <span class="number">6</span>
+        <h3>AI feature inside an existing app</h3>
+        <p>Reuse selected ideas, such as tool approvals or reliable history, without moving your entire application into the Harness.</p>
+      </div>
+    </div>
+
+    <div class="recommend">
+      <h3>Best use for you right now</h3>
+      <p>Use the current Harness as a reference laboratory. Study how it solves agent memory, tools, approvals, and modular design. Then bring only the useful pieces into each existing application.</p>
+    </div>
+
+    <h2 style="margin-top:18px">When it is probably too much</h2>
+    <p>If you only need a simple chatbot or one model call, a smaller direct integration will usually be easier.</p>
+
+    <div class="footer"><span>DeepSeek Harness, plain-English guide</span><span>2</span></div>
+  </section>
+
+  <section class="page">
+    <span class="eyebrow">Customization</span>
+    <h1 style="font-size:25pt">How can you modify it?</h1>
+    <p class="subtitle" style="font-size:12pt">Treat it like a set of building blocks. Change one layer at a time and keep the safety boundaries visible.</p>
+
+    <table class="plain-table">
+      <thead><tr><th>You want to change</th><th>What you would customize</th></tr></thead>
+      <tbody>
+        <tr><td>The AI model</td><td>Swap or add a model provider while keeping the rest of the assistant unchanged.</td></tr>
+        <tr><td>What the agent can do</td><td>Add tools for your files, APIs, databases, products, or internal workflows.</td></tr>
+        <tr><td>Safety and control</td><td>Choose which actions need permission, which files are available, and what should be refused.</td></tr>
+        <tr><td>Memory</td><td>Decide what is recorded, how conversations are reconstructed, and where history is stored.</td></tr>
+        <tr><td>The experience</td><td>Use a terminal, Web interface, headless service, or connect the agent to your own app.</td></tr>
+        <tr><td>Specialist behavior</td><td>Create focused plugins or subagents for coding, research, marketing, operations, or review.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Best parts to reuse first</h2>
+    <ol class="list">
+      <li><strong>Reliable history:</strong> keep a clear record of what the user, model, and tools did.</li>
+      <li><strong>One controlled tool path:</strong> every action passes through the same checks.</li>
+      <li><strong>Human approval:</strong> ask at the moment a sensitive action would happen.</li>
+      <li><strong>Replaceable services:</strong> change providers without changing every feature that uses them.</li>
+      <li><strong>Clean shutdown:</strong> stop background work and remove temporary capabilities safely.</li>
+    </ol>
+
+    <div class="warning">
+      <h3>Important limits</h3>
+      <p>The current local version is <strong>demo-verified</strong>, not market-ready. Browser use, live model-provider behavior, other operating systems, long-running production use, and a full security review still need separate testing.</p>
+    </div>
+
+    <h2 style="margin-top:16px">A sensible next step</h2>
+    <p>Pick one existing application. Identify one problem, such as unreliable agent history or unsafe tool execution. Port that small piece first, test it inside the real application, and only then consider the next layer.</p>
+    <div class="footer"><span>Verified local baseline: 0.1.1-rc.2, reviewed 21 August 2026</span><span>3</span></div>
+  </section>
+</body>
+</html>

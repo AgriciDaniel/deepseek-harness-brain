@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this research brain, please cite it and the upstream DeepSeek Harness repository."
+title: "DeepSeek Harness Brain"
+type: software
+version: 0.2.0
+date-released: 2026-08-21
+authors:
+  - family-names: Agrici
+    given-names: Daniel
+repository-code: "https://github.com/AgriciDaniel/deepseek-harness-brain"
+url: "https://github.com/AgriciDaniel/deepseek-harness-brain"
+license: MIT
+keywords:
+  - DeepSeek Harness
+  - AI agents
+  - Obsidian
+  - software architecture
+  - portability

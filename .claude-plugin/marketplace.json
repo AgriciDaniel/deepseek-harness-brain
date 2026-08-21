@@ -1,0 +1,34 @@
+{
+  "name": "agricidaniel-deepseek-harness-brain",
+  "owner": {
+    "name": "Daniel Agrici"
+  },
+  "metadata": {
+    "description": "DeepSeek Harness Brain template and skill layer",
+    "version": "0.2.0"
+  },
+  "plugins": [
+    {
+      "name": "deepseek-harness-brain",
+      "source": "./",
+      "description": "Obsidian brain for DeepSeek Harness architecture, operations, extension development, security, testing, and debugging.",
+      "version": "0.2.0",
+      "author": {
+        "name": "Daniel Agrici"
+      },
+      "repository": "https://github.com/AgriciDaniel/deepseek-harness-brain",
+      "license": "MIT",
+      "category": "deepseek-harness",
+      "tags": [
+        "obsidian",
+        "brain",
+        "deepseek-harness"
+      ],
+      "keywords": [
+        "deepseek-harness-brain",
+        "deepseek-harness",
+        "obsidian"
+      ]
+    }
+  ]
+}

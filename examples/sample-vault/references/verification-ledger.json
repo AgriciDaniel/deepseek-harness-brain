@@ -1,0 +1,65 @@
+{
+  "schema": "deepseek-harness-brain.verification-ledger.v1",
+  "as_of": "2026-08-21",
+  "checkout_commit": "b150a551b8d465e31e418e1b2eaf5e79bbb7d28e",
+  "host": {
+    "platform": "linux-x64",
+    "node": "24.16.0",
+    "pnpm": "11.7.0",
+    "vitest": "4.1.8"
+  },
+  "experiments": [
+    {
+      "id": "keyless-loader-composition",
+      "command": "node_modules/.bin/vitest run --config vitest.e2e.config.ts examples/headless-agent/tests/keyless-smoke.e2e.ts",
+      "result": "passed",
+      "test_files": "1 passed",
+      "tests": "1 passed",
+      "evidence_tier": "keyless real Loader composition",
+      "proves": "The assembled headless profile booted the real Loader tree, completed its deterministic tool round trip, and persisted the session on this host.",
+      "does_not_prove": "Live provider, browser, another platform, hostile-input security, or production durability."
+    },
+    {
+      "id": "request-reconstruction",
+      "command": "node_modules/.bin/vitest run packages/core/agent-loop/tests/invariant.spec.ts packages/core/agent-loop/tests/request-reconstruction.spec.ts",
+      "result": "passed",
+      "test_files": "2 passed",
+      "tests": "30 passed",
+      "evidence_tier": "focused source-level unit and invariant tests",
+      "proves": "The selected invariant and request-reconstruction cases passed on this checkout and host.",
+      "does_not_prove": "Every provider, persistence backend, fork shape, or end-to-end transcript."
+    },
+    {
+      "id": "registration-disposal",
+      "command": "node_modules/.bin/vitest run packages/core/tools/tests/tools.spec.ts -t returns-a-callable-disposer",
+      "result": "passed",
+      "test_files": "1 passed",
+      "tests": "1 passed, 135 skipped by the name filter",
+      "evidence_tier": "focused source-level unit test",
+      "proves": "The selected tool registration disposer removes the registered tool.",
+      "does_not_prove": "Quiescent disposal of every plugin or every in-flight capability."
+    },
+    {
+      "id": "pre-execute-denial",
+      "command": "node_modules/.bin/vitest run packages/core/tools/tests/tools.spec.ts -t pre-execute-deny",
+      "result": "passed",
+      "test_files": "1 passed",
+      "tests": "1 passed, 135 skipped by the name filter",
+      "evidence_tier": "focused source-level unit test",
+      "proves": "The selected pre-execute denial case short-circuited before the tool body.",
+      "does_not_prove": "Every policy provider, approval UI, sandbox provider, or mutating tool."
+    }
+  ],
+  "blocked_attempts": [
+    {
+      "command_family": "pnpm exec vitest",
+      "result": "not run",
+      "reason": "pnpm performed a dependency status check and the repository postinstall refused to replace the user-owned global core.hooksPath. The guard was not bypassed."
+    },
+    {
+      "command": "node_modules/.bin/vitest run examples/headless-agent/tests/keyless-smoke.e2e.ts",
+      "result": "no test files found",
+      "reason": "The default Vitest configuration excludes e2e files. The successful rerun used vitest.e2e.config.ts."
+    }
+  ]
+}

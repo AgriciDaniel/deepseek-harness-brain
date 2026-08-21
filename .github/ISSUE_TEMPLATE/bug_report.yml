@@ -1,0 +1,87 @@
+name: Bug report
+description: Report reproducible behavior in the brain, CLI, importer, vault, or reports
+title: "bug: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a problem. Do not paste credentials, private client data, raw private captures, or local home paths. Use the private route in SECURITY.md for sensitive findings.
+  - type: input
+    id: version
+    attributes:
+      label: Brain version or commit
+      placeholder: "0.2.0 or commit SHA"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Python version, operating system, and architecture
+      placeholder: "Python 3.12, Ubuntu 24.04, x86_64"
+    validations:
+      required: true
+  - type: dropdown
+    id: vault
+    attributes:
+      label: Vault type
+      options:
+        - Template vault
+        - Sample vault
+        - Generated client vault
+        - No vault involved
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Exact command
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      description: Use the smallest clean-checkout reproduction you can provide.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual sanitized output
+      description: Remove credentials, client data, usernames, and local paths.
+      render: text
+    validations:
+      required: true
+  - type: dropdown
+    id: tier
+    attributes:
+      label: Verification tier affected
+      options:
+        - Static or lint
+        - Unit or focused test
+        - Deterministic demo
+        - Package or install
+        - Browser
+        - Native or cross-platform
+        - Live provider
+        - Unknown
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I removed credentials, private client data, and local paths.
+          required: true
+        - label: I checked whether this reproduces from a clean checkout.
+          required: true

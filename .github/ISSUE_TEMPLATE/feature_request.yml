@@ -1,0 +1,38 @@
+name: Feature request
+description: Propose a concrete improvement to the brain or its tooling
+title: "feature: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use case
+      description: What problem would this solve, and for whom?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Evidence, compatibility, and security impact
+      description: Note any new source, mutation, dependency, or stronger verification claim.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I included no credentials, private client data, or local paths.
+          required: true

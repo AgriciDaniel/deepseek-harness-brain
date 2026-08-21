@@ -1,0 +1,58 @@
+name: Evidence correction
+description: Challenge a claim, citation, confidence level, or portability recommendation
+title: "evidence: "
+labels: ["evidence", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: Keep the correction source-cited and free of credentials or private captures.
+  - type: input
+    id: target
+    attributes:
+      label: Claim, note, or ledger row
+      placeholder: "Claim ID or repository-relative note path"
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current statement being challenged
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Pinned official source URL
+      placeholder: "https://github.com/.../blob/<commit>/..."
+    validations:
+      required: true
+  - type: input
+    id: locator
+    attributes:
+      label: Commit, version, date, and exact locator
+    validations:
+      required: true
+  - type: textarea
+    id: correction
+    attributes:
+      label: Proposed correction and verdict
+      description: Explain whether the evidence refutes, narrows, supports, or leaves the claim unresolved.
+    validations:
+      required: true
+  - type: checkboxes
+    id: impact
+    attributes:
+      label: Potential impact
+      options:
+        - label: Maturity or verification status
+        - label: Portability recommendation
+        - label: Security boundary
+        - label: Compatibility or version claim
+        - label: Documentation only
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I included no credentials, private captures, client data, or local paths.
+          required: true

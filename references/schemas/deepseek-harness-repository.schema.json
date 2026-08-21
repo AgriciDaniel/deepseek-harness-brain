@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/deepseek-ai/deepseek-harness/deepseek-harness-repository.schema.json",
+  "title": "DeepSeek Harness repository inventory",
+  "type": "object",
+  "required": ["schema", "as_of", "commit", "package_version", "cordis_local_version", "tracked_dirty", "counts", "paths", "evidence", "limits"],
+  "properties": {
+    "schema": {"const": "deepseek-harness.repository-inventory.v1"},
+    "as_of": {"type": "string", "format": "date"},
+    "commit": {"type": "string", "minLength": 1},
+    "package_version": {"type": "string", "minLength": 1},
+    "cordis_local_version": {"type": "string", "minLength": 1},
+    "tracked_dirty": {"type": "boolean"},
+    "counts": {"type": "object"},
+    "paths": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "evidence": {"type": "array", "items": {"$ref": "deepseek-harness-document.schema.json"}},
+    "limits": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}
